@@ -47,3 +47,33 @@ function previewTagRequests() {
     }
   });
 }
+
+/**
+ * 初回セットアップ用：既存メールを処理済みとして登録（Slack通知なし）
+ */
+function initializeProcessedIds() {
+  const label = getOrCreateLabel_(CONFIG.PROCESSED_LABEL);
+  const threads = GmailApp.search(
+    'label:"タグ設置依頼"', 0, 500
+  );
+
+  const processedIds = getProcessedIds_(CONFIG.PROCESSED_IDS_KEY);
+  const replyProcessedIds = getProcessedIds_(CONFIG.PROCESSED_REPLY_IDS_KEY);
+
+  threads.forEach(thread => {
+    thread.addLabel(label);
+    thread.getMessages().forEach(msg => {
+      const subject = msg.getSubject() || '';
+      const id = msg.getId();
+      if (isReplySubject_(subject)) {
+        replyProcessedIds[id] = new Date().getTime();
+      } else {
+        processedIds[id] = new Date().getTime();
+      }
+    });
+  });
+
+  saveProcessedIds_(CONFIG.PROCESSED_IDS_KEY, processedIds);
+  saveProcessedIds_(CONFIG.PROCESSED_REPLY_IDS_KEY, replyProcessedIds);
+  Logger.log('初期化完了');
+}
