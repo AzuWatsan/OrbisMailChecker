@@ -1,4 +1,3 @@
-# OrbisMailChecker
 # gmail-to-slack-notifier
 
 Gmail で受信した特定のメールを検知し、Slack にスレッド形式で通知する Google Apps Script です。
@@ -42,7 +41,13 @@ GAS エディタの「プロジェクトの設定」→「スクリプトプロ�
 | `SLACK_CHANNEL_ID` | `Cxxxxxxxx` |
 | `SLACK_WEBHOOK_URL` | （不要になった場合は削除可） |
 
-### 4. トリガーの設定
+### 4. 初回セットアップ用スクリプトの実行
+
+トリガーを設定する前に、GAS エディタで `initializeProcessedIds()` を一度手動実行してください。
+
+これにより既存のメールが処理済みとして登録され、初回から大量通知が来るのを防げます。
+
+### 5. トリガーの設定
 
 GAS エディタの「トリガー」から以下を設定：
 
